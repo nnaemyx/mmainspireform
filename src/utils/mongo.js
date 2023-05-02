@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+import { ObjectId } from 'mongodb';
 
 const uri = process.env.MONGODB_URI;
 const options = {
@@ -32,4 +33,16 @@ export async function connectToDatabase() {
   const client = await clientPromise;
   const db = client.db(process.env.MONGODB_DB);
   return { client, db };
+}
+
+export async function getFormById(id) {
+  try {
+    const db = await connectToDatabase();
+    const collection = await db.collection('formData');
+    const result = await collection.findOne({ _id: ObjectId(id) });
+    return result;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 }
